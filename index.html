@@ -662,13 +662,15 @@
           
           <!-- Contact Form Card (Right Column) -->
           <div class="contact-card-right" data-reveal data-stagger="2">
-            <form id="contactForm" class="contact-form" action="https://formsubmit.co/devsherkhane6@gmail.com" method="POST">
-              <!-- Redirect to your live website after successful send -->
-              <input type="hidden" name="_next" value="https://devsherkhane.github.io/">
-              <!-- Subject line in your inbox -->
-              <input type="hidden" name="_subject" value="New Portfolio Message!">
-              <!-- Disable Captcha so it is a direct, smooth redirection -->
-              <input type="hidden" name="_captcha" value="false">
+            <form id="contactForm" class="contact-form" action="https://api.web3forms.com/submit" method="POST">
+              <!-- Web3Forms API Access Key -->
+              <input type="hidden" name="access_key" value="02c9af87-ccd9-4c1c-85c1-550173aa5120">
+              <!-- Custom subject lines in your inbox -->
+              <input type="hidden" name="subject" value="New Portfolio Message!">
+              <!-- Custom sender label name -->
+              <input type="hidden" name="from_name" value="Dev Sherkhane Portfolio">
+              <!-- Invisible HoneyPot for spam-bot prevention -->
+              <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
               <div class="form-group">
                 <label for="name">Your Name</label>
                 <input type="text" id="name" name="name" required placeholder="Jane Doe" autocomplete="name">
@@ -807,6 +809,52 @@
     
     // Start typewriter shortly after initial page motion
     setTimeout(typeEffect, 1200);
+
+    // ── AJAX Contact Form Handler (Web3Forms) ──────────────────────────────────
+    const form = document.getElementById("contactForm");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const origText = submitBtn.textContent;
+      submitBtn.textContent = "Transmitting...";
+      submitBtn.disabled = true;
+
+      try {
+        const res = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json", 
+            "Accept": "application/json" 
+          },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+        
+        const json = await res.json();
+        
+        if (res.status === 200) {
+          submitBtn.textContent = "✓ Message Sent!";
+          submitBtn.classList.add("sent");
+          form.reset();
+          setTimeout(() => {
+            submitBtn.textContent = origText;
+            submitBtn.classList.remove("sent");
+            submitBtn.disabled = false;
+          }, 4000);
+        } else {
+          throw new Error(json.message || "HTTP error");
+        }
+      } catch (err) {
+        console.error("Form transmission failed:", err);
+        submitBtn.textContent = "Transmission Failed";
+        submitBtn.classList.add("error");
+        setTimeout(() => {
+          submitBtn.textContent = origText;
+          submitBtn.classList.remove("error");
+          submitBtn.disabled = false;
+        }, 3500);
+      }
+    });
 
 
   </script>
