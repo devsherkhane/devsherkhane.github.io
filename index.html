@@ -662,7 +662,13 @@
           
           <!-- Contact Form Card (Right Column) -->
           <div class="contact-card-right" data-reveal data-stagger="2">
-            <form id="contactForm" class="contact-form">
+            <form id="contactForm" class="contact-form" action="https://formsubmit.co/devsherkhane6@gmail.com" method="POST">
+              <!-- Redirect to your live website after successful send -->
+              <input type="hidden" name="_next" value="https://devsherkhane.github.io/">
+              <!-- Subject line in your inbox -->
+              <input type="hidden" name="_subject" value="New Portfolio Message!">
+              <!-- Disable Captcha so it is a direct, smooth redirection -->
+              <input type="hidden" name="_captcha" value="false">
               <div class="form-group">
                 <label for="name">Your Name</label>
                 <input type="text" id="name" name="name" required placeholder="Jane Doe" autocomplete="name">
@@ -802,45 +808,7 @@
     // Start typewriter shortly after initial page motion
     setTimeout(typeEffect, 1200);
 
-    // ── Ajax Contact Form Handler (formsubmit.co) ──────────────────────────────────
-    const form = document.getElementById("contactForm");
-    const submitBtn = document.getElementById("submitBtn");
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const origText = submitBtn.textContent;
-      submitBtn.textContent = "Transmitting...";
-      submitBtn.disabled = true;
-
-      try {
-        const res = await fetch("https://formsubmit.co/ajax/devsherkhane6@gmail.com", {
-          method: "POST",
-          headers: { "Accept": "application/json" },
-          body: new FormData(form)
-        });
-        
-        if (!res.ok) throw new Error("HTTP error");
-        await res.json();
-        
-        submitBtn.textContent = "✓ Message Sent!";
-        submitBtn.classList.add("sent");
-        form.reset();
-        setTimeout(() => {
-          submitBtn.textContent = origText;
-          submitBtn.classList.remove("sent");
-          submitBtn.disabled = false;
-        }, 4000);
-      } catch (err) {
-        console.error("Form transmission failed:", err);
-        submitBtn.textContent = "Transmission Failed";
-        submitBtn.classList.add("error");
-        setTimeout(() => {
-          submitBtn.textContent = origText;
-          submitBtn.classList.remove("error");
-          submitBtn.disabled = false;
-        }, 3500);
-      }
-    });
   </script>
 </body>
 </html>
