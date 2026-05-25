@@ -815,10 +815,13 @@
       try {
         const res = await fetch("https://formsubmit.co/ajax/devsherkhane6@gmail.com", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+          headers: { "Accept": "application/json" },
+          body: new FormData(form)
         });
+        
+        if (!res.ok) throw new Error("HTTP error");
         await res.json();
+        
         submitBtn.textContent = "✓ Message Sent!";
         submitBtn.classList.add("sent");
         form.reset();
@@ -827,7 +830,8 @@
           submitBtn.classList.remove("sent");
           submitBtn.disabled = false;
         }, 4000);
-      } catch {
+      } catch (err) {
+        console.error("Form transmission failed:", err);
         submitBtn.textContent = "Transmission Failed";
         submitBtn.classList.add("error");
         setTimeout(() => {
